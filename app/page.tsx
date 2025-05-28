@@ -1,32 +1,14 @@
-"use client";
-
 import React from "react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 
-import { useGetAuthUser } from "@/hooks/use-get-auth-user";
+import { auth } from "@/auth";
 
 import LoginForm from "@/features/login/components/login-form";
-import SplashScreen from "@/components/splash-screen";
 
-function Page() {
-  const router = useRouter();
-  const { data, isLoading } = useGetAuthUser();
-  const [checkedAuth, setCheckedAuth] = useState(false);
+async function Page() {
+  const session = await auth();
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (data) {
-        router.replace("/dashboard");
-      } else {
-        setCheckedAuth(true);
-      }
-    }
-  }, [data, isLoading, router]);
-
-  if (!checkedAuth) {
-    return <SplashScreen />;
-  }
+  if (session?.user) redirect("/dashboard");
 
   return <LoginForm />;
 }
