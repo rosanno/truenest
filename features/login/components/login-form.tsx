@@ -1,27 +1,16 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Loader, LockKeyhole } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
-import { useLogin } from "@/features/login/hooks/use-login";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
@@ -31,8 +20,7 @@ const formSchema = z.object({
 });
 
 const LoginForm = () => {
-  const router = useRouter();
-  const { mutateAsync: login, isPending } = useLogin();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,17 +31,18 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = async (
-    values: z.infer<typeof formSchema>
-  ) => {
-    const response = await login({
-      email: values.email,
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+
+    const result = await signIn("credentials", {
+      identifier: values.email,
       password: values.password,
+      redirect: false,
+      callbackUrl: "/dashboard",
     });
 
-    console.log(response);
-
-    router.push("/dashboard");
+    console.log(result);
+    setIsLoading(false);
   };
 
   return (
@@ -65,20 +54,12 @@ const LoginForm = () => {
               <LockKeyhole className="w-6 h-6 text-[#F34451]" />
             </div>
           </div>
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Welcome Back
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Sign in to access your account and manage your
-            dashboard
-          </p>
+          <h2 className="text-2xl font-semibold tracking-tight">Welcome Back</h2>
+          <p className="text-sm text-muted-foreground">Sign in to access your account and manage your dashboard</p>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="email"
@@ -86,12 +67,7 @@ const LoginForm = () => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="email"
-                        placeholder="name@example.com"
-                        disabled={isPending}
-                      />
+                      <Input {...field} type="email" placeholder="name@example.com" disabled={isLoading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -104,12 +80,7 @@ const LoginForm = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="password"
-                        placeholder="Enter your password"
-                        disabled={isPending}
-                      />
+                      <Input {...field} type="password" placeholder="Enter your password" disabled={isLoading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -121,25 +92,16 @@ const LoginForm = () => {
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                     <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Remember me
-                      </FormLabel>
+                      <FormLabel className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Remember me</FormLabel>
                     </div>
                   </FormItem>
                 )}
               />
-              <Button
-                type="submit"
-                className="w-full h-10 bg-[#F34451] hover:bg-[#F34451]/80"
-                disabled={isPending}
-              >
-                {isPending ? (
+              <Button type="submit" className="w-full h-10 bg-[#F34451] hover:bg-[#F34451]/80" disabled={isLoading}>
+                {isLoading ? (
                   <Loader
                     className="animate-spin
                 "

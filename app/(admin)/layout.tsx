@@ -1,33 +1,16 @@
-"use client";
+import React from "react";
+import { redirect } from "next/navigation";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-
-import { useGetAuthUser } from "@/hooks/use-get-auth-user";
+import { auth } from "@/auth";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import SplashScreen from "@/components/splash-screen";
 import Header from "@/components/header";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
-  const { data, isLoading, isError } = useGetAuthUser();
-  const [authChecked, setAuthChecked] = useState(false);
+const Layout = async ({ children }: { children: React.ReactNode }) => {
+  const session = await auth();
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (isError || !data) {
-        router.push("/");
-      } else {
-        setAuthChecked(true);
-      }
-    }
-  }, [data, isLoading, isError, router]);
-
-  if (isLoading || !authChecked) {
-    return <SplashScreen />;
-  }
+  if (!session?.user) redirect("/");
 
   return (
     <SidebarProvider>
