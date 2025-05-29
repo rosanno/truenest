@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Bell, LogOut, Search, Settings, User, Mail, Inbox, Send, Archive } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 
 const Header = () => {
   const { data: session } = useSession();
-  
+
   return (
     <>
       <div className="bg-white shadow-lg">
@@ -104,7 +104,7 @@ const Header = () => {
                   <Settings className="size-4 mr-2" />
                   <span>Settings</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="p-2 cursor-pointer text-red-600" onClick={() => {}}>
+                <DropdownMenuItem className="p-2 cursor-pointer text-red-600" onClick={() => signOut()}>
                   <LogOut className="size-4 mr-2" />
                   <span>Logout</span>
                 </DropdownMenuItem>
