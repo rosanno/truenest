@@ -4,20 +4,12 @@ import bcrypt from "bcryptjs";
 
 import prisma from "./lib/prisma";
 
-// Custom error class for invalid login
-class CustomError extends CredentialsSignin {
-  code = "custom_error";
-  constructor(message: string) {
-    super(message);
-    this.name = "CustomError";
-  }
-}
-
-// Optional specialized class
-class InvalidLoginError extends CustomError {
-  constructor(message = "Invalid username or password.") {
-    super(message);
-    this.code = "invalid_login";
+export class CustomAuthError extends CredentialsSignin {
+  constructor(code: string) {
+    super();
+    this.code = code;
+    this.message = code;
+    this.stack = undefined;
   }
 }
 
@@ -38,28 +30,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const { identifier, password } = credentials as Record<"identifier" | "password", string>;
 
         if (!identifier || !password) {
-          throw new CustomError("Missing credentials.");
+          throw new CustomAuthError("Missing credentials.");
         }
 
         const isEmail = identifier.includes("@");
 
         const user = await prisma.user.findUnique({
           where: isEmail ? { email: identifier } : { username: identifier },
+          include: {
+            profile: true,
+          },
         });
 
         if (!user || !user.password) {
-          throw new CustomError("User not found.");
+          throw new CustomAuthError("User not found.");
         }
 
         const isCorrectPassword = await bcrypt.compare(password, user.password);
 
         if (!isCorrectPassword) {
-          throw new InvalidLoginError("Incorrect password.");
+          throw new CustomAuthError("Incorrect password.");
         }
 
         return {
           id: user.id,
           username: user.username,
+          name: user.profile?.firstName + " " + user.profile?.lastName,
           email: user.email,
           role: user.roleId,
         };
