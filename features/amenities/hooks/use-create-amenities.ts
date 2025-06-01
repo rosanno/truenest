@@ -1,16 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
-import { createAmenity } from "@/features/amenities/api/aminities-api";
-import useAxios from "@/hooks/use-axios";
 import { Aminity } from "@/types/type";
 
 export const useCreateAmenities = () => {
   const queryClient = useQueryClient();
-  const axiosInstance = useAxios();
 
   return useMutation({
     mutationFn: async (amenity: Aminity) => {
-      return await createAmenity(axiosInstance, amenity);
+      const response = await axios.post("/api/amenities", amenity);
+
+      return response.data; // Assuming the response contains the created amenity detail
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["amenities"] });

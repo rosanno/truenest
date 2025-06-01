@@ -4,10 +4,10 @@ import { Row } from "@tanstack/react-table";
 
 import useAmenityDialog from "@/features/amenities/hooks/use-amenity-dialog";
 import useAlert from "@/hooks/use-alert";
+import { Aminity } from "@/types/type";
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Aminity } from "./columns";
 
 const CellAction = ({ row }: { row: Row<Aminity> }) => {
   const { onOpen } = useAmenityDialog();
@@ -36,9 +36,9 @@ const CellAction = ({ row }: { row: Row<Aminity> }) => {
           }}
         >
           <Pencil className="mr-2 h-4 w-4" />
-          Update
+          Edit
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => open(row.original._id!)}>
+        <DropdownMenuItem onClick={() => open(row.original.id!)}>
           <Trash2 className="mr-2 h-4 w-4" />
           Delete
         </DropdownMenuItem>

@@ -40,14 +40,14 @@ const AmenitiyFormModal = () => {
       if (data) {
         const payload = {
           ...values,
-          _id: data?._id,
+          id: data?.id,
         };
 
         const response = await updateAmenity(payload);
-        toast.success(response.message);
+        console.log(response);
       } else {
         const response = await createAmenity(values);
-        toast.success(response.message);
+        toast.success(response.msg);
       }
       form.reset({
         name: "",
@@ -57,7 +57,7 @@ const AmenitiyFormModal = () => {
       onClose();
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create amenity.");
+      toast.error("Something went wrong please try again.");
     }
   };
 
@@ -83,63 +83,63 @@ const AmenitiyFormModal = () => {
 
   return (
     <>
-    {isUpdating && <Loader />}
-    <ModalDialog title={`${data ? "Update" : "Add"} Amenity`} description="Provide details to create a new amenity." isOpen={isOpen} onClose={handleClose}>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter amenity name" {...field} disabled={isCreated || isUpdating} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      {(isUpdating || isCreated) && <Loader />}
+      <ModalDialog title={`${data ? "Update" : "Add"} Amenity`} description="Provide details to create a new amenity." isOpen={isOpen} onClose={handleClose}>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter amenity name" {...field} disabled={isCreated || isUpdating} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Enter amenity description" {...field} disabled={isCreated || isUpdating} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Enter amenity description" {...field} disabled={isCreated || isUpdating} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="icon"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Icon</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter icon name or URL" {...field} disabled={isCreated || isUpdating} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="icon"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Icon</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter icon name or URL" {...field} disabled={isCreated || isUpdating} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button variant="outline" type="button" onClick={handleClose} disabled={isCreated || isUpdating}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isCreated || isUpdating}>
-              {data ? "Update" : "Save"}
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </ModalDialog>
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button variant="outline" type="button" onClick={handleClose} disabled={isCreated || isUpdating}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isCreated || isUpdating}>
+                {data ? "Update" : "Save"}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </ModalDialog>
     </>
   );
 };

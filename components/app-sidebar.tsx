@@ -4,8 +4,8 @@
 import { FolderDot, Laptop, LayoutGrid, Leaf, MapPin, UserPlus, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
-import { useGetAuthUser } from "@/hooks/use-get-auth-user";
 import { cn } from "@/lib/utils";
 
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
@@ -48,7 +48,7 @@ const items = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { data } = useGetAuthUser();
+  const { data: session } = useSession();
 
   return (
     <Sidebar className="border-r-0! shadow-lg">
@@ -64,10 +64,8 @@ export function AppSidebar() {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
-              <h6 className="font-medium text-base">
-                {data?.user?.profileId.firstName} {data?.user?.profileId.lastName}
-              </h6>
-              <span className="text-[#959595] text-[14px]">{data?.username}</span>
+              <h6 className="font-medium text-base">{session?.user?.name}</h6>
+              <span className="text-[#959595] text-[14px]">{session?.user?.email}</span>
             </div>
           </div>
         </div>
