@@ -1,16 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
-import { updateAmenity } from "@/features/amenities/api/aminities-api";
-import useAxios from "@/hooks/use-axios";
 import { Aminity } from "@/types/type";
 
 export const useUpdateAmenities = () => {
   const queryClient = useQueryClient();
-  const axiosInstance = useAxios();
 
   return useMutation({
     mutationFn: async (amenity: Aminity) => {
-      return await updateAmenity(axiosInstance, amenity);
+      const response = await axios.patch(`/api/amenities/${amenity.id}`, amenity);
+
+      return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["amenities"] });

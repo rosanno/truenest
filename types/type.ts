@@ -20,15 +20,16 @@ export type AuthUser = {
 };
 
 export type Aminity = {
-  _id?: string;
+  id?: string;
   name: string;
   description: string;
-  __v?: number;
+  icon?: string;
+  isActive?: boolean;
 };
 
 export type Aminities = {
-  success: boolean;
-  aminities: Aminity[];
+  msg: string;
+  amenities: Aminity[];
 };
 
 export interface Properties {
