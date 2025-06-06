@@ -1,12 +1,33 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { ArrowDownAZ, ArrowUpZA } from "lucide-react";
+import { ArrowDown01, ArrowDownAZ, ArrowUpZA, Image } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 
 import CellAction from "./cell-action";
 import { Aminity } from "@/types/type";
 
+import { Switch } from "@/components/ui/switch";
+
 export const columns: ColumnDef<Aminity>[] = [
+  {
+    accessorKey: "no",
+    header: () => (
+      <div className="font-semibold">
+        <ArrowDown01 className="size-4 text-muted-foreground" />
+      </div>
+    ),
+  },
+  {
+    accessorKey: "icon",
+    header: () => <div className="font-semibold">Icon</div>,
+    cell: ({ row }) => {
+      const icon = row.getValue("icon") as string;
+
+      return <>{icon ? <img src={icon} alt="icon" className="size-8 rounded-full" /> : <Image className="size-5 text-muted-foreground" />}</>;
+    },
+  },
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -42,16 +63,16 @@ export const columns: ColumnDef<Aminity>[] = [
     },
   },
   {
-    accessorKey: "icon",
-    header: () => <div className="font-semibold">Icon</div>,
-  },
-  {
     accessorKey: "isActive",
     header: () => <div className="font-semibold">Active</div>,
+    cell: ({ row }) => {
+      const isActive = row.getValue("isActive") as boolean;
+
+      return <Switch checked={isActive} disabled className="cursor-not-allowed" />;
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => <CellAction row={row} />,
   },
 ];
-

@@ -24,13 +24,27 @@ export async function GET(): Promise<Response> {
       return NextResponse.json({ msg: "No amenities found" }, { status: 404 });
     }
 
-    return NextResponse.json({ message: "Amenities found", amenities: result }, { status: 200 });
+    // Add "no" property to each item
+    const numberedAmenities = result.map((item, index) => ({
+      no: index + 1,
+      ...item,
+    }));
+
+    return NextResponse.json(
+      {
+        message: "Amenities found",
+        amenities: numberedAmenities,
+        count: numberedAmenities.length,
+      },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("[AMENITY_GET]", error);
 
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
+
 
 export async function POST(req: NextRequest) {
   const sessions = await auth();

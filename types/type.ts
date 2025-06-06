@@ -20,6 +20,7 @@ export type AuthUser = {
 };
 
 export type Aminity = {
+  no?: number;
   id?: string;
   name: string;
   description: string;
