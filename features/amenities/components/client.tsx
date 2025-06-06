@@ -5,16 +5,16 @@ import { toast } from "sonner";
 
 import useAmenityDialog from "@/features/amenities/hooks/use-amenity-dialog";
 import { useGetAminities } from "@/features/amenities/hooks/use-get-aminities";
+import { useDeleteAmenity } from "@/features/amenities/hooks/use-delete-amenity";
 import useAlert from "@/hooks/use-alert";
 
 import { Card, CardContent } from "@/components/ui/card";
 import AmenitiyFormModal from "./amenitiy-form-modal";
+import { columns } from "./columns";
 import { DataTable } from "@/components/data-table";
 import AddButton from "@/components/add-button";
-import { columns } from "./columns";
 import AlertModal from "@/components/alert-modal";
 import { Loader } from "@/components/loader";
-import { useDeleteAmenity } from "../hooks/use-delete-amenity";
 import SplashScreen from "@/components/splash-screen";
 
 const Client = () => {
